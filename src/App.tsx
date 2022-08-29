@@ -1,26 +1,16 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import { Repo } from './Pages/Repo/Index';
+import { Repos } from './Pages/Repos/Index';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return(
+    <Routes>
+      <Route path="/" element={<Repos/>}/>
+        
+      
+      <Route path="repos/:name" element={<Repo/>}/>
+    </Routes>
+  )
 }
 
 export default App;
