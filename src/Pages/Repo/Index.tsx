@@ -1,96 +1,53 @@
-import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Container, List, ListItemButton, ListItemText, Toolbar, Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
-import { useState } from 'react';
 import {useQuery} from 'react-query';
-import { Link, useLocation, useParams } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 
+type Repositories = {
+    full_name: string;
+    description: string;
+    html_url: string;
+}
 
-
-
-export interface DetailsInterface {
-    login:               string;
-    id:                  number;
-    node_id:             string;
-    avatar_url:          string;
-    gravatar_id:         string;
-    url:                 string;
-    html_url:            string;
-    followers_url:       string;
-    following_url:       string;
-    gists_url:           string;
-    starred_url:         string;
-    subscriptions_url:   string;
-    organizations_url:   string;
-    repos_url:           string;
-    events_url:          string;
-    received_events_url: string;
-    type:                string;
-    site_admin:          boolean;
-    name:                string;
-    company:             string;
-    blog:                string;
-    location:            string;
-    email:               null;
-    hireable:            null;
-    bio:                 string;
-    twitter_username:    string;
-    public_repos:        number;
-    public_gists:        number;
-    followers:           number;
-    following:           number;
-    created_at:          Date;
-    updated_at:          Date;
-  }
+type UserInfo ={
+    name: string;
+    avatar_url: string
+}
 
 export function Repo(){
-    //const {name} = useParams();
-    const location = useLocation()
-    const {login} = location.state as DetailsInterface
-    console.log('name: ', login)
-    
-
-    const {data, isFetching} = useQuery<any>('repos', async () => {
-        const response = await axios.get(`https://api.github.com/users/diego3g/repos}`);
-        console.log('response: ', response.data);
+    const location = useLocation();
+    const {name, avatar_url} = location.state as UserInfo
+  
+    const {data, isLoading} = useQuery<Repositories[]>('repos', async () => {
+        const response = await axios.get(`https://api.github.com/users/${name}/repos`);
         return response.data;
     })
 
-
     return(
         <div>
-            
-            <h1>Haduken</h1>
-        </div>
-    )
-
-
-    /*return(
-        <div>
-
             <AppBar position='static'>
-                
-                
-                    <Toolbar disableGutters
-                        sx={{
-                            justifyContent: 'space-around',
-                            marginLeft: '10px',
-                            marginRight: '10px',
-                        }}
-                    >
-                        <Box sx={{ 
-                            flexGrow: 1,
-                            display :'flex',
-                            alignItems: 'center' 
-                        }}>
-                            <GitHubIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1}}/>
-                            <Typography
-                                variant="h6"
-                                noWrap
-                                component="a"
-                                href="/"
-                                sx={{
+                <Toolbar disableGutters
+                    sx={{
+                        justifyContent: 'space-around',
+                        marginLeft: '10px',
+                        marginRight: '10px',
+                    }}
+                >
+                    <Box sx={{ 
+                        flexGrow: 1,
+                        display :'flex',
+                        alignItems: 'center' 
+                    }}>
+                        <GitHubIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1}}/>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            href="/"
+                            sx={{
                                 mr: 2,
                                 display: { xs: 'none', md: 'flex' },
                                 fontFamily: 'monospace',
@@ -98,35 +55,43 @@ export function Repo(){
                                 letterSpacing: '.3rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
-                                }}
+                            }}
+                        >
+                            GITHUB SEARCH
+                        </Typography>
+                    </Box>
+                            
+                    <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{marginRight: '10px'}}
                             >
-                                GITHUB SEARCH
+                                Repositories: {data?.length}
                             </Typography>
-                        </Box>
-                        
-                        <Box sx={{ flexGrow: 0 }}>
-                            <span>Repositories: {state?.public_repos}</span>
-                            <Avatar sizes='large' alt={state?.name} src={state?.avatar_url} />
-                        </Box>
-                    </Toolbar>
-               
-            
-
+                            <Avatar sizes='large' alt={name} src={avatar_url} />
+                    </Box>
+                </Toolbar>  
             </AppBar>
 
             <Container maxWidth="xs">
-            {isFetching && <h1>carregando</h1>}
+                {isLoading && <CircularProgress />}
 
-            <div>
-                <img src={data?.avatar_url} alt={`Avatar ${data?.name}`}/>
-                <div>{data?.name}</div>
-            </div>
+                <List>
+                    {data?.map( e=> {
+                        return(
+                            <ListItemButton href={e.html_url} >
+                                <ListItemText
+                                    primary={e.full_name}
+                                    secondary={e.description} 
+                                />
+                            </ListItemButton>
+                        )
+                    })}
+                </List>
 
-           
-        </Container>
 
-        </div>
+            </Container>
 
-        
-    )*/
+        </div>  
+    )
 }
