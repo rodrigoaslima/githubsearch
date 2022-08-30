@@ -1,4 +1,6 @@
-import { Container } from '@mui/material';
+import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import axios from 'axios';
 import { useState } from 'react';
 import {useQuery} from 'react-query';
@@ -52,16 +54,66 @@ export function Repo(){
     
 
     return(
-        <Container maxWidth="xs">
+        <div>
+
+            <AppBar position='static'>
+                
+                
+                    <Toolbar disableGutters
+                        sx={{
+                            justifyContent: 'space-around',
+                            marginLeft: '10px',
+                            marginRight: '10px',
+                        }}
+                    >
+                        <Box sx={{ 
+                            flexGrow: 1,
+                            display :'flex',
+                            alignItems: 'center' 
+                        }}>
+                            <GitHubIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1}}/>
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                component="a"
+                                href="/"
+                                sx={{
+                                mr: 2,
+                                display: { xs: 'none', md: 'flex' },
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                                }}
+                            >
+                                GITHUB SEARCH
+                            </Typography>
+                        </Box>
+                        
+                        <Box sx={{ flexGrow: 0 }}>
+                            <span>Repositories: {data?.public_repos}</span>
+                            <Avatar sizes='large' alt={data?.name} src={data?.avatar_url} />
+                        </Box>
+                    </Toolbar>
+               
+            
+
+            </AppBar>
+
+            <Container maxWidth="xs">
             {isFetching && <h1>carregando</h1>}
 
             <div>
                 <img src={data?.avatar_url} alt={`Avatar ${data?.name}`}/>
                 <div>{data?.name}</div>
-
             </div>
 
            
         </Container>
+
+        </div>
+
+        
     )
 }

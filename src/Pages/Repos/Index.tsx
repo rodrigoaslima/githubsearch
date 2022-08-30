@@ -55,7 +55,7 @@ export function Repos() {
         <ButtonBox>
           <Button variant="contained" onClick={()=> navigate(`/repos/${name}`)} >Search</Button>
           
-          <Button variant="outlined" onClick={()=> navigate(`/repos/details/${name}`)}>Go to GitHub</Button>
+          <Button variant="outlined" href='https://github.com/'>Go to GitHub</Button>
         </ButtonBox>
 
       </div>
