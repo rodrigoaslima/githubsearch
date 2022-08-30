@@ -4,7 +4,10 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import axios from 'axios';
 import { useState } from 'react';
 import {useQuery} from 'react-query';
-import { Link, useParams } from "react-router-dom"
+import { Link, useLocation, useParams } from "react-router-dom"
+
+
+
 
 export interface DetailsInterface {
     login:               string;
@@ -39,21 +42,31 @@ export interface DetailsInterface {
     following:           number;
     created_at:          Date;
     updated_at:          Date;
-}
-
+  }
 
 export function Repo(){
-    const {name} = useParams();
-   
-
-    const {data, isFetching} = useQuery<DetailsInterface>('repos', async () => {
-        const response = await axios.get(`https://api.github.com/users/${name}`)
-        return response.data
-    })
-
+    //const {name} = useParams();
+    const location = useLocation()
+    const {login} = location.state as DetailsInterface
+    console.log('name: ', login)
     
 
+    const {data, isFetching} = useQuery<any>('repos', async () => {
+        const response = await axios.get(`https://api.github.com/users/diego3g/repos}`);
+        console.log('response: ', response.data);
+        return response.data;
+    })
+
+
     return(
+        <div>
+            
+            <h1>Haduken</h1>
+        </div>
+    )
+
+
+    /*return(
         <div>
 
             <AppBar position='static'>
@@ -92,8 +105,8 @@ export function Repo(){
                         </Box>
                         
                         <Box sx={{ flexGrow: 0 }}>
-                            <span>Repositories: {data?.public_repos}</span>
-                            <Avatar sizes='large' alt={data?.name} src={data?.avatar_url} />
+                            <span>Repositories: {state?.public_repos}</span>
+                            <Avatar sizes='large' alt={state?.name} src={state?.avatar_url} />
                         </Box>
                     </Toolbar>
                
@@ -115,5 +128,5 @@ export function Repo(){
         </div>
 
         
-    )
+    )*/
 }

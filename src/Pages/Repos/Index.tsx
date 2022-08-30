@@ -13,28 +13,54 @@ type Repositosy ={
   description: string;
 }
 
+export interface DetailsInterface {
+  login:               string;
+  id:                  number;
+  node_id:             string;
+  avatar_url:          string;
+  gravatar_id:         string;
+  url:                 string;
+  html_url:            string;
+  followers_url:       string;
+  following_url:       string;
+  gists_url:           string;
+  starred_url:         string;
+  subscriptions_url:   string;
+  organizations_url:   string;
+  repos_url:           string;
+  events_url:          string;
+  received_events_url: string;
+  type:                string;
+  site_admin:          boolean;
+  name:                string;
+  company:             string;
+  blog:                string;
+  location:            string;
+  email:               null;
+  hireable:            null;
+  bio:                 string;
+  twitter_username:    string;
+  public_repos:        number;
+  public_gists:        number;
+  followers:           number;
+  following:           number;
+  created_at:          Date;
+  updated_at:          Date;
+}
+
+
 export function Repos() {
   const [name, setName] = useState('');
 
   const navigate = useNavigate();
-
-
-  /*async function handleGetRepositoryPerName(name: string){
-    console.log('Name: ', name)
-    
-    const response = await axios.get(`https://api.github.com/users/diego3g/repos`);
+ 
+  const {refetch} = useQuery<DetailsInterface>('repos', async () => {
+    const response = await axios.get(`https://api.github.com/users/${name}`)
+    navigate(`/repos/${name}`, {state: response.data})
     return response.data
-  }*/
+  },{enabled: false})
 
-
-
-  //const {data, isFetching} = useQuery<Repositosy[]>(['repos', name], async () => handleGetRepositoryPerName(name));
-
-  const {data, isFetching} = useQuery<Repositosy[]>('repos', async () => {
-    const response = await axios.get(`https://api.github.com/users/diego3g/repos`)
-    return response.data
-  })
-
+ 
   return (
     <Wrapper>
       <TitleBox>
@@ -53,7 +79,7 @@ export function Repos() {
         />
 
         <ButtonBox>
-          <Button variant="contained" onClick={()=> navigate(`/repos/${name}`)} >Search</Button>
+          <Button variant="contained" onClick={()=> refetch() } >Search</Button>
           
           <Button variant="outlined" href='https://github.com/'>Go to GitHub</Button>
         </ButtonBox>
@@ -62,25 +88,6 @@ export function Repos() {
       
 
     </Wrapper>
-
-
-
-
-
-
-
-
-      /*data?.map(repo => {
-        return(
-          <li key={repo.full_name}>
-            <Link to={`/repos/${repo.full_name}`}>{repo.full_name}</Link>
-            <p>{repo.description}</p>
-          </li>
-        )
-      })*/
-
-
-
 
   );
 }
